@@ -151,15 +151,12 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    try:
-        if workout_type == 'SWM':
-            return Swimming(*data)
-        if workout_type == 'RUN':
-            return Running(*data)
-        if workout_type == 'WLK':
-            return SportsWalking(*data)
-    except AttributeError:
-        print('Ошибка AttributeError')
+    if workout_type == 'SWM':
+        return Swimming(*data)
+    if workout_type == 'RUN':
+        return Running(*data)
+    if workout_type == 'WLK':
+        return SportsWalking(*data)
 
 
 def main(training: Training) -> str:
