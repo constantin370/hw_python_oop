@@ -3,6 +3,7 @@ from time import sleep
 
 
 def check_data(num: str) -> float:
+    """Функция проверки и перевода данных c str во float."""
     try:
         num = float(num)
         return num
