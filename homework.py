@@ -2,11 +2,18 @@
 from dataclasses import asdict, dataclass
 
 
-@dataclass(init=True, repr=False,
-           eq=False, order=False,
-           unsafe_hash=False, frozen=False,
-           kw_only=False,
-           slots=False)
+# (init=True, repr=False,
+# eq=False, order=False,
+# unsafe_hash=False, frozen=False,
+# match_args=True, kw_only=False,
+# slots=False)
+# Пытался отключить создание лишних методов. Локкально тесты проходит.
+# Когда пытаюсь пройти через Яндекс выдают ошибки:
+# TypeError: dataclass() got an unexpected keyword argument 'kw_only'
+# и так со всеми. 
+# Пожалуйста дайте ссылки с более развернутой 
+# информацией по этому повросу. Спасибо!
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
