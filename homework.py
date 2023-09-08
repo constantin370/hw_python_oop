@@ -1,8 +1,12 @@
 # Финальный проект спринта: модуль фитнес-трекера
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 
-@dataclass
+@dataclass(init=True, repr=False,
+           eq=False, order=False,
+           unsafe_hash=False, frozen=False,
+           match_args=False, kw_only=False,
+           slots=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -11,15 +15,16 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
+    MESSAGE: str = ('Тип тренировки: {training_type}; '
+                    'Длительность: {duration:.3f} ч.; '
+                    'Дистанция: {distance:.3f} км; '
+                    'Ср. скорость: {speed:.3f} км/ч; '
+                    'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
-        """Функция вывода в консоль результатов тренировки."""
-        message: str = (f'Тип тренировки: {self.training_type}; '
-                        f'Длительность: { self.duration:.3f} ч.; '
-                        f'Дистанция: {self.distance:.3f} км; '
-                        f'Ср. скорость: {self.speed:.3f} км/ч; '
-                        f'Потрачено ккал: {self.calories:.3f}.')
-        return message
+        """Выводим информацию о тренировке."""
+        message_print = self.MESSAGE.format(**asdict(self))
+        return message_print
 
 
 class Training:
@@ -47,12 +52,11 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        result_spent_calories: float = (
-            ((self.CALORIES_MEAN_SPEED_MULTIPLIER
-             * self.get_mean_speed()
-             + self.CALORIES_MEAN_SPEED_SHIFT) * self.weight
-             / self.M_IN_KM * self.training_time_in_min))
-        return result_spent_calories
+        self.get_mean_speed()
+        self.weight
+        self.M_IN_KM
+        self.duration
+        self.MIN_IN_H
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -115,7 +119,6 @@ class Swimming(Training):
     def __init__(self, action: int, duration: float, weight: float,
                  length_pool: float, count_pool: float) -> None:
         super().__init__(action, duration, weight)
-        super().get_distance()
         self.length_pool = length_pool
         self.count_pool = count_pool
 
@@ -135,15 +138,12 @@ class Swimming(Training):
         return result_spent_calories_swing
 
 
-def read_package(workout_type: str, data: list) -> Training:
-    """Прочитать данные полученные от датчиков."""
-    training_type: dict = {'SWM': Swimming,
-                           'RUN': Running,
-                           'WLK': SportsWalking}
+def read_package(workout_type: str, data: list[int]) -> Training:
+    training_type: dict[str, type[Training]] = {'SWM': Swimming,
+                                                'RUN': Running,
+                                                'WLK': SportsWalking}
     if workout_type in training_type:
         return training_type[workout_type](*data)
-    else:
-        print(f'ERROR: {TypeError}')
 
 
 def check_data(data: list) -> list:
@@ -151,7 +151,7 @@ def check_data(data: list) -> list:
     # На случай если в packages придет число в виде
     # строки или же вообще не понятно что.
     try:
-        numbers_in_the_list: list(float) = ([float(element_checking)
+        numbers_in_the_list: list[float] = ([float(element_checking)
                                              for element_checking in data])
         return numbers_in_the_list
     except ValueError:
@@ -164,17 +164,18 @@ def main(training: Training) -> str:
     try:
         info = training.show_training_info()
         print(info.get_message())
+        return info.get_message()
     except AttributeError:
         print(f'ERROR {AttributeError}')
 
 
 if __name__ == '__main__':
-    packages: list = [
+    packages: list[tuple[str, list[int]]] = [
         ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
     ]
     for workout_type, data in packages:
         check: list = check_data(data)
-        training: str(list) = read_package(workout_type, check)
+        training: dict[str, list[float]] = read_package(workout_type, check)
         main(training)
