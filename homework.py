@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass
 @dataclass(init=True, repr=False,
            eq=False, order=False,
            unsafe_hash=False, frozen=False,
-           match_args=False, kw_only=False,
+           match_args=True, kw_only=False,
            slots=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
