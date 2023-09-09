@@ -2,18 +2,17 @@
 from dataclasses import asdict, dataclass
 
 
-# (init=True, repr=False,
-# eq=False, order=False,
-# unsafe_hash=False, frozen=False,
-# match_args=True, kw_only=False,
-# slots=False)
 # Пытался отключить создание лишних методов. Локально тесты проходит.
 # Когда пытаюсь пройти через Яндекс выдают ошибки:
 # TypeError: dataclass() got an unexpected keyword argument 'kw_only'
 # и так со всеми.
 # Пожалуйста дайте ссылки с более развернутой
 # информацией по этому повросу. Спасибо!
-@dataclass
+@dataclass(init=True, repr=False,
+           eq=False, order=False,
+           unsafe_hash=False, frozen=False,
+           match_args=False, kw_only=False,
+           slots=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -59,11 +58,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        self.get_mean_speed()
-        self.weight
-        self.M_IN_KM
-        self.duration
-        self.MIN_IN_H
+        pass
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
