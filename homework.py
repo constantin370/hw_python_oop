@@ -161,12 +161,11 @@ def check_data(data: list) -> list:
         exit()
 
 
-def main(training: Training) -> str:
+def main(training: Training) -> None:
     """Главная функция."""
     try:
         info = training.show_training_info()
         print(info.get_message())
-        return info.get_message()
     except AttributeError:
         print(f'ERROR {AttributeError}')
 
@@ -179,5 +178,5 @@ if __name__ == '__main__':
     ]
     for workout_type, data in packages:
         check: list = check_data(data)
-        training: dict[str, list[float]] = read_package(workout_type, check)
+        training: Training = read_package(workout_type, check)
         main(training)
