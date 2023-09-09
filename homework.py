@@ -10,9 +10,7 @@ from dataclasses import asdict, dataclass
 # информацией по этому повросу. Спасибо!
 @dataclass(init=True, repr=False,
            eq=False, order=False,
-           unsafe_hash=False, frozen=False,
-           match_args=False, kw_only=False,
-           slots=False)
+           unsafe_hash=False, frozen=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
