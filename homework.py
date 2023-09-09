@@ -1,16 +1,9 @@
 # Финальный проект спринта: модуль фитнес-трекера
 from dataclasses import asdict, dataclass
+from typing import ClassVar
 
 
-# Пытался отключить создание лишних методов. Локально тесты проходит.
-# Когда пытаюсь пройти через Яндекс выдают ошибки:
-# TypeError: dataclass() got an unexpected keyword argument 'kw_only'
-# и так со всеми.
-# Пожалуйста дайте ссылки с более развернутой
-# информацией по этому повросу. Спасибо!
-@dataclass(init=True, repr=False,
-           eq=False, order=False,
-           unsafe_hash=False, frozen=False)
+@dataclass(init=True, repr=False, eq=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
@@ -19,16 +12,15 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
-    MESSAGE: str = ('Тип тренировки: {training_type}; '
-                    'Длительность: {duration:.3f} ч.; '
-                    'Дистанция: {distance:.3f} км; '
-                    'Ср. скорость: {speed:.3f} км/ч; '
-                    'Потрачено ккал: {calories:.3f}.')
+    MESSAGE: ClassVar[str] = ('Тип тренировки: {training_type}; '
+                              'Длительность: {duration:.3f} ч.; '
+                              'Дистанция: {distance:.3f} км; '
+                              'Ср. скорость: {speed:.3f} км/ч; '
+                              'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
         """Выводим информацию о тренировке."""
-        message_print = self.MESSAGE.format(**asdict(self))
-        return message_print
+        return self.MESSAGE.format(**asdict(self))
 
 
 class Training:
@@ -56,7 +48,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -138,12 +130,15 @@ class Swimming(Training):
         return result_spent_calories_swing
 
 
-def read_package(workout_type: str, data: list[int]) -> Training:
-    training_type: dict[str, type[Training]] = {'SWM': Swimming,
-                                                'RUN': Running,
-                                                'WLK': SportsWalking}
-    if workout_type in training_type:
-        return training_type[workout_type](*data)
+TRAINING_TYPE: dict[str, type[Training]] = {'SWM': Swimming,
+                                            'RUN': Running,
+                                            'WLK': SportsWalking}
+
+
+def read_package(workout_type: str, data: list[int]) -> None:
+    """Функция распаковкий данных."""
+    if workout_type in TRAINING_TYPE:
+        return TRAINING_TYPE[workout_type](*data)
 
 
 def check_data(data: list) -> list:
@@ -176,5 +171,5 @@ if __name__ == '__main__':
     ]
     for workout_type, data in packages:
         check: list = check_data(data)
-        training: Training = read_package(workout_type, check)
+        training: type[Training] = read_package(workout_type, check)
         main(training)
