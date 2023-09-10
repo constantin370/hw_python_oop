@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass
 from typing import ClassVar, Union
 
 
-@dataclass(init=True, repr=False, eq=False)
+@dataclass(repr=False, eq=False)
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
