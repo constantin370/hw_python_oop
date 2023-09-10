@@ -1,6 +1,6 @@
 # Финальный проект спринта: модуль фитнес-трекера
 from dataclasses import asdict, dataclass
-from typing import ClassVar
+from typing import ClassVar, Union
 
 
 @dataclass(init=True, repr=False, eq=False)
@@ -48,7 +48,9 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError
+        raise NotImplementedError(
+            f'Класс наследник: {type(self).__name__} не переопределил метод: '
+            f'{self.get_spent_calories()}')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -135,7 +137,7 @@ TRAINING_TYPE: dict[str, type[Training]] = {'SWM': Swimming,
                                             'WLK': SportsWalking}
 
 
-def read_package(workout_type: str, data: list[int]) -> None:
+def read_package(workout_type: str, data: list[int]) -> Union[Training, None]:
     """Функция распаковкий данных."""
     if workout_type in TRAINING_TYPE:
         return TRAINING_TYPE[workout_type](*data)
@@ -171,5 +173,5 @@ if __name__ == '__main__':
     ]
     for workout_type, data in packages:
         check: list = check_data(data)
-        training: type[Training] = read_package(workout_type, check)
+        training: Union[Training, None] = read_package(workout_type, check)
         main(training)
