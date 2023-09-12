@@ -50,7 +50,7 @@ class Training:
         """Получить количество затраченных калорий."""
         raise NotImplementedError(
             f'Класс наследник: {type(self).__name__} не переопределил метод: '
-            f'{self.get_spent_calories()}')
+            'get_spent_calories')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
